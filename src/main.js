@@ -83,7 +83,7 @@ if (startUrl.length > 0) {
 const crawler = new CheerioCrawler({
     proxyConfiguration,
     maxRequestsPerCrawl: maxItems,
-    maxConcurrency: 10,
+    maxConcurrency: 50,
     maxRequestRetries: 8,
     requestQueue,
     async requestHandler(context) {
