@@ -1,0 +1,97 @@
+{
+    "actorSpecification": 1,
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "operation",
+                    "url",
+                    "title",
+                    "id",
+                    "price",
+                    "size",
+                    "baths",
+                    "bedrooms",
+                    "address",
+                    "typology",
+                    "subTypology",
+                    "contacts",
+                    "latitude",
+                    "longitude",
+                    "D_ID",
+                    "D_NAME"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "operation": {
+                        "label": "Sale / Rent",
+                        "format": "text"
+                    },
+                    "url": {
+                        "label": "Detail url",
+                        "format": "link"
+                    },
+                    "title": {
+                        "label": "Title",
+                        "format": "text"
+                    },
+                    "id": {
+                        "label": "Id of property",
+                        "format": "number"
+                    },
+                    "price": {
+                        "label": "Price of property",
+                        "format": "number"
+                    },
+                    "size": {
+                        "label": "Size of property in square meters",
+                        "format": "number"
+                    },
+                    "baths": {
+                        "label": "Number of baths",
+                        "format": "number"
+                    },
+                    "bedrooms": {
+                        "label": "Number of bedrooms",
+                        "format": "number"
+                    },
+                    "address": {
+                        "label": "Address",
+                        "format": "text"
+                    },
+                    "typology": {
+                        "label": "Type of property",
+                        "format": "text"
+                    },
+                    "subTypology": {
+                        "label": "Sub type",
+                        "format": "text"
+                    },
+                    "contacts": {
+                        "label": "Contacts of advertiser",
+                        "format": "array"
+                    },
+                    "latitude": {
+                        "label": "Latitude",
+                        "format": "number"
+                    },
+                    "longitude": {
+                        "label": "Longitude",
+                        "format": "number"
+                    },
+                    "D_ID": {
+                        "label": "Location id",
+                        "format": "number"
+                    },
+                    "D_NAME": {
+                        "label": "Location name",
+                        "format": "text"
+                    }
+                }
+            }
+        }
+    }
+}
