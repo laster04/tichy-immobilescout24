@@ -40,7 +40,7 @@ export const handleDistrictSearch = async (context) => {
 export const handlePropertyList = async (context, { userInput }) => {
     const { json, crawler: { requestQueue }, request: { userData } } = context;
     const { maxItems, endPage = 10 } = userInput;
-    const { requestPayload : body, item } = userData;
+    const { requestPayload : body } = userData;
 
     let items = (body.pageNumber - 1) * body.maxItems;
     let processedItems = items;
@@ -97,8 +97,8 @@ export const handlePropertyList = async (context, { userInput }) => {
 };
 
 export const handleProperty = async (context) => {
-    const { json, request: { userData: { item } } } = context;
-    const prop = handleOneProperty(json);
+    const { json, request: { userData: { requestPayload, item } } } = context;
+    const prop = handleOneProperty(json, requestPayload.operation);
     prop.D_ID = item.id;
     prop.D_NAME = item.name;
 
@@ -106,20 +106,15 @@ export const handleProperty = async (context) => {
 };
 
 
-const handleOneProperty = (property) => {
-    const { adTargetingParameters, contact } = property;
+const handleOneProperty = (property, operation) => {
+    const { adTargetingParameters } = property;
     const output = {
         url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
-        id: property.header.id,
+        // id: property.header.id,
+        operation: operation,
         typology: adTargetingParameters.obj_typeOfFlat,
-        price: adTargetingParameters.obj_purchasePrice,
-        size: adTargetingParameters.obj_livingSpace,
-        contacts: {
-            commercialName: contact.contactData.agent.company,
-            contactName: contact.contactData.agent.name,
-            rating: contact.contactData.agent.rating.label,
-            phones: contact.phoneNumbers.map((c) => c.text)
-        }
+        price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters.obj_purchasePrice,
+        size: adTargetingParameters.obj_livingSpace
     }
     for (const section of property.sections) {
         switch (section.type) {
@@ -127,12 +122,12 @@ const handleOneProperty = (property) => {
                 output.title = section.title;
                 break;
             case 'MEDIA':
-                output.photos = section.media.filter(m => m.type === 'PICTURE').map(m => m.fullImageUrl);
-                output.tour3d = section.media.filter(m => m.type === 'VIRTUAL_TOUR').map(m => m.url);
+                // output.photos = section.media.filter(m => m.type === 'PICTURE').map(m => m.fullImageUrl);
+                // output.tour3d = section.media.filter(m => m.type === 'VIRTUAL_TOUR').map(m => m.url);
                 break;
             case 'MAP':
-                output.latitude = section?.location?.lat;
-                output.longitude = section?.location?.lng;
+                // output.latitude = section?.location?.lat;
+                // output.longitude = section?.location?.lng;
                 output.address = section.addressLine1 + ' ' + section.addressLine2
                 break;
             case 'TOP_ATTRIBUTES':
@@ -142,11 +137,10 @@ const handleOneProperty = (property) => {
                         case 'Bathrooms:':
                             output.baths = attr.text
                             break;
-                        case 'Sleeping rooms:':
-                            output.rooms = attr.text
-                            break;
                         case 'Total rent:':
-                            output.price = attr.text
+                            if (output.price.length === 0) {
+                                output.price = attr.text
+                            }
                             break;
                         case 'Rooms':
                             output.rooms = attr.text
