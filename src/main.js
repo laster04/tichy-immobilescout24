@@ -8,7 +8,7 @@ await Actor.init();
 
 const userInput = await Actor.getInput();
 const {
-    startUrl = [],
+    inputCities = [],
     district = null,
     onlyNewest = false,
     proxy,
@@ -21,15 +21,15 @@ const {
     propertyType = 'apartment',
 } = userInput;
 
-if (!district && startUrl.length === 0) {
-    await Actor.fail('You have to input district param or any startUrls to run crawler..');
+if (!district && inputCities.length === 0) {
+    await Actor.fail('You have to input district param or any inputCities to run crawler..');
 }
 
 const proxyConfiguration = await Actor.createProxyConfiguration(proxy);
 const requestQueue = await Actor.openRequestQueue();
 
-if (startUrl.length > 0) {
-    for (const { url, id, name } of startUrl) {
+if (inputCities.length > 0) {
+    for (const { url, id, name } of inputCities) {
         if (url.match(/\/expose/)) {
             const propertyId = url.match(/expose\/([a-z\d]+)/)[1];
             await requestQueue.addRequest({

@@ -3,12 +3,14 @@
     "type": "object",
     "schemaVersion": 1,
     "properties": {
-        "district": {
-            "title": "Location",
+        "country": {
+            "title": "Country",
             "type": "string",
-            "description": "Where you want to look for the real estates, e.g. Madrid. For further filtering you can use the URL below.",
-            "editor": "textfield",
-            "prefill": "Berlin"
+            "description": "Select your country",
+            "editor": "select",
+            "default": "de",
+            "enum": ["de", "at"],
+            "enumTitles": ["Germany", "Austria"]
         },
         "operation": {
             "title": "Operation",
@@ -28,27 +30,6 @@
             "enum": ["apartment", "house", "plot", "solid-house", "shorttermaccommodation", "flatshareroom", "garage","office", "store","industry", "gastronomy", "tradesite", "specialpurpose", "investment", "compulsoryauction"],
             "enumTitles": ["Apartment", "House", "Plot", "Solid/Prefabricated house", "Temporary living", "Shared flat", "Garage", "Office", "Retail trade", "Hall / Production", "Gastronomy / hotel", "Industry plot", "Special purpose", "Investment", "Compulsory auction"]
         },
-        "minPrice": {
-            "title": "Minimum price",
-            "type": "integer",
-            "description": "Lower price of estate.",
-            "nullable": true
-        },
-        "maxPrice": {
-            "title": "Maximum price",
-            "type": "integer",
-            "description": "Maximum price of estate.",
-            "nullable": true
-        },
-        "country": {
-            "title": "Country",
-            "type": "string",
-            "description": "Select your country",
-            "editor": "select",
-            "default": "de",
-            "enum": ["de", "at"],
-            "enumTitles": ["Germany", "Austria"]
-        },
         "maxItems": {
             "title": "Limit the number of items",
             "type": "integer",
@@ -63,7 +44,7 @@
             "nullable": true,
             "prefill": 50
         },
-        "startUrl": {
+        "inputCities": {
             "title": "URL you want to scrape",
             "type": "array",
             "prefill": [],
