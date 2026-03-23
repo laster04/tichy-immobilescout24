@@ -98,7 +98,7 @@ export const handlePropertyList = async (context, { userInput }) => {
 
 export const handleProperty = async (context) => {
     const { json, request: { userData: { requestPayload, item } } } = context;
-    const prop = handleOneProperty(json, requestPayload.operation);
+    const prop = json; handleOneProperty(json, requestPayload.operation);
     prop.D_ID = item.id;
     prop.D_NAME = item.name;
 
