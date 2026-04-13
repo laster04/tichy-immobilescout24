@@ -101,6 +101,24 @@ export const handleProperty = async (context) => {
     const prop = handleOneProperty(json, requestPayload.operation);
     prop.D_ID = item.id;
     prop.D_NAME = item.name;
+    prop.AI_DATA = [
+        `ADDRESS: ${prop.address ?? ''}`,
+        `DESCRIPTION: ${prop.description ?? ''}`,
+        `LATITUDE: ${prop.latitude ?? ''}`,
+        `LONGITUDE: ${prop.longitude ?? ''}`,
+        `NEW DEVELOPMENT: ${prop.newDevelopment ?? ''}`,
+        `PARKING: ${prop.parking ?? ''}`,
+        `BUILDING_QUALITY: ${prop.buildingQuality ?? ''}`,
+        `GARDEN: ${prop.garden ?? ''}`,
+        `BALCONY: ${prop.balcony ?? ''}`,
+        `FLOOR: ${prop.floor ?? ''}`,
+        `LIFT: ${prop.lift ?? ''}`,
+        `ENERGY_TYPE: ${prop.energyType ?? ''}`,
+        `FIRING_TYPE: ${prop.firingType ?? ''}`,
+        `HEATING_TYPE: ${prop.heatingType ?? ''}`,
+        `CELLAR: ${prop.cellar ?? ''}`,
+        `RENOVATION: ${prop.renovation ?? ''}`,
+    ].join('\n');
 
     await Dataset.pushData(prop);
 };
@@ -108,13 +126,26 @@ export const handleProperty = async (context) => {
 
 const handleOneProperty = (property, operation) => {
     const { adTargetingParameters } = property;
+    const descriptions = [];
     const output = {
         url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
         // id: property.header.id,
         operation: operation,
         typology: adTargetingParameters.obj_typeOfFlat,
         price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters.obj_purchasePrice,
-        size: adTargetingParameters.obj_livingSpace
+        size: adTargetingParameters.obj_livingSpace,
+        newDevelopment: adTargetingParameters.obj_newlyConst,
+        parking: adTargetingParameters.obj_noParkSpaces,
+        buildingQuality: adTargetingParameters.obj_condition,
+        garden: adTargetingParameters.obj_garden,
+        balcony: adTargetingParameters.obj_balcony,
+        floor: adTargetingParameters.obj_floor,
+        lift: adTargetingParameters.obj_lift,
+        energyType: adTargetingParameters.obj_energyType,
+        firingType: adTargetingParameters.obj_firingTypes,
+        heatingType: adTargetingParameters.obj_heatingType,
+        cellar: adTargetingParameters.obj_cellar,
+        renovation: adTargetingParameters.obj_lastRefurbish,
     }
     for (const section of property.sections) {
         switch (section.type) {
@@ -126,9 +157,15 @@ const handleOneProperty = (property, operation) => {
                 // output.tour3d = section.media.filter(m => m.type === 'VIRTUAL_TOUR').map(m => m.url);
                 break;
             case 'MAP':
-                // output.latitude = section?.location?.lat;
-                // output.longitude = section?.location?.lng;
-                output.address = section.addressLine1 + ' ' + section.addressLine2
+                output.latitude = section?.location?.lat;
+                output.longitude = section?.location?.lng;
+                output.address = section.addressLine1 + ' ' + section.addressLine2;
+                break;
+            case 'TRAVELTIME':
+                output.address = section.address;
+                break;
+            case 'TEXT_AREA':
+                descriptions.push(section.text);
                 break;
             case 'TOP_ATTRIBUTES':
             case 'ATTRIBUTE_LIST':
@@ -153,6 +190,7 @@ const handleOneProperty = (property, operation) => {
                 break;
         }
     }
+    output.description = descriptions.join('\n\n');
 
     return output;
 }

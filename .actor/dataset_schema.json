@@ -16,7 +16,23 @@
                     "typology",
                     "subTypology",
                     "D_ID",
-                    "D_NAME"
+                    "D_NAME",
+                    "latitude",
+                    "longitude",
+                    "description",
+                    "newDevelopment",
+                    "parking",
+                    "buildingQuality",
+                    "garden",
+                    "balcony",
+                    "floor",
+                    "lift",
+                    "energyType",
+                    "firingType",
+                    "heatingType",
+                    "cellar",
+                    "renovation",
+                    "AI_DATA"
                 ]
             },
             "display": {
@@ -68,6 +84,70 @@
                     },
                     "D_NAME": {
                         "label": "Location name",
+                        "format": "text"
+                    },
+                    "latitude": {
+                        "label": "Latitude",
+                        "format": "number"
+                    },
+                    "longitude": {
+                        "label": "Longitude",
+                        "format": "number"
+                    },
+                    "description": {
+                        "label": "Description",
+                        "format": "text"
+                    },
+                    "newDevelopment": {
+                        "label": "New Development",
+                        "format": "text"
+                    },
+                    "parking": {
+                        "label": "Parking",
+                        "format": "text"
+                    },
+                    "buildingQuality": {
+                        "label": "Building Quality",
+                        "format": "text"
+                    },
+                    "garden": {
+                        "label": "Garden",
+                        "format": "text"
+                    },
+                    "balcony": {
+                        "label": "Balcony",
+                        "format": "text"
+                    },
+                    "floor": {
+                        "label": "Floor",
+                        "format": "text"
+                    },
+                    "lift": {
+                        "label": "Lift",
+                        "format": "text"
+                    },
+                    "energyType": {
+                        "label": "Energy Type",
+                        "format": "text"
+                    },
+                    "firingType": {
+                        "label": "Firing Type",
+                        "format": "text"
+                    },
+                    "heatingType": {
+                        "label": "Heating Type",
+                        "format": "text"
+                    },
+                    "cellar": {
+                        "label": "Cellar",
+                        "format": "text"
+                    },
+                    "renovation": {
+                        "label": "Renovation",
+                        "format": "text"
+                    },
+                    "AI_DATA": {
+                        "label": "AI Data",
                         "format": "text"
                     }
                 }
