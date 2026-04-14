@@ -5,34 +5,36 @@
             "title": "Overview",
             "transformation": {
                 "fields": [
-                    "operation",
-                    "url",
-                    "title",
-                    "price",
-                    "size",
-                    "baths",
-                    "bedrooms",
-                    "address",
-                    "typology",
-                    "subTypology",
                     "D_ID",
                     "D_NAME",
-                    "latitude",
-                    "longitude",
-                    "description",
-                    "newDevelopment",
-                    "parking",
-                    "buildingQuality",
-                    "garden",
+                    "bedrooms",
+                    "operation",
+                    "price",
+                    "size",
+                    "title",
+                    "typology",
+                    "url",
+                    "AI_DATA",
+                    "address",
                     "balcony",
-                    "floor",
-                    "lift",
+                    "baths",
+                    "buildingQuality",
+                    "cellar",
+                    "description",
                     "energyType",
                     "firingType",
+                    "energyClass",
+                    "floor",
+                    "garden",
                     "heatingType",
-                    "cellar",
+                    "latitude",
+                    "longitude",
+                    "pool",
+                    "lift",
+                    "newDevelopment",
+                    "parking",
                     "renovation",
-                    "AI_DATA"
+                    "subTypology"
                 ]
             },
             "display": {
@@ -114,6 +116,10 @@
                         "label": "Garden",
                         "format": "text"
                     },
+                    "pool": {
+                        "label": "Pool",
+                        "format": "text"
+                    },
                     "balcony": {
                         "label": "Balcony",
                         "format": "text"
@@ -132,6 +138,10 @@
                     },
                     "firingType": {
                         "label": "Firing Type",
+                        "format": "text"
+                    },
+                    "energyClass": {
+                        "label": "Energy Class",
                         "format": "text"
                     },
                     "heatingType": {

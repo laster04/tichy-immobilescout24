@@ -106,14 +106,19 @@ export const handleProperty = async (context) => {
         `DESCRIPTION: ${prop.description ?? ''}`,
         `LATITUDE: ${prop.latitude ?? ''}`,
         `LONGITUDE: ${prop.longitude ?? ''}`,
+        `MUNICIPALITY: ${prop.municipality ?? ''}`,
+        `NEIGHBORHOOD: ${prop.neighborhood ?? ''}`,
         `NEW DEVELOPMENT: ${prop.newDevelopment ?? ''}`,
         `PARKING: ${prop.parking ?? ''}`,
         `BUILDING_QUALITY: ${prop.buildingQuality ?? ''}`,
+        `AIR_CONDITION: ${prop.airCondition ?? ''}`,
         `GARDEN: ${prop.garden ?? ''}`,
+        `POOL: ${prop.pool ?? ''}`,
         `BALCONY: ${prop.balcony ?? ''}`,
         `FLOOR: ${prop.floor ?? ''}`,
         `LIFT: ${prop.lift ?? ''}`,
         `ENERGY_TYPE: ${prop.energyType ?? ''}`,
+        `ENERGY_CLASS: ${prop.energyClass ?? ''}`,
         `FIRING_TYPE: ${prop.firingType ?? ''}`,
         `HEATING_TYPE: ${prop.heatingType ?? ''}`,
         `CELLAR: ${prop.cellar ?? ''}`,
@@ -129,7 +134,6 @@ const handleOneProperty = (property, operation) => {
     const descriptions = [];
     const output = {
         url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
-        // id: property.header.id,
         operation: operation,
         typology: adTargetingParameters.obj_typeOfFlat,
         price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters.obj_purchasePrice,
@@ -142,6 +146,7 @@ const handleOneProperty = (property, operation) => {
         floor: adTargetingParameters.obj_floor,
         lift: adTargetingParameters.obj_lift,
         energyType: adTargetingParameters.obj_energyType,
+        energyClass: adTargetingParameters.obj_energyEfficiencyClass,
         firingType: adTargetingParameters.obj_firingTypes,
         heatingType: adTargetingParameters.obj_heatingType,
         cellar: adTargetingParameters.obj_cellar,
@@ -159,10 +164,12 @@ const handleOneProperty = (property, operation) => {
             case 'MAP':
                 output.latitude = section?.location?.lat;
                 output.longitude = section?.location?.lng;
-                output.address = section.addressLine1 + ' ' + section.addressLine2;
+                output.address = section.addressLine2;
                 break;
             case 'TRAVELTIME':
-                output.address = section.address;
+                if (section.address && !section.isBlocked) {
+                    output.address = section.address;
+                }
                 break;
             case 'TEXT_AREA':
                 descriptions.push(section.text);
