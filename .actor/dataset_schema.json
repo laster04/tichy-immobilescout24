@@ -40,16 +40,20 @@
             "display": {
                 "component": "table",
                 "properties": {
-                    "operation": {
-                        "label": "Sale / Rent",
+                    "D_ID": {
+                        "label": "Location id",
+                        "format": "number"
+                    },
+                    "D_NAME": {
+                        "label": "Location name",
                         "format": "text"
                     },
-                    "url": {
-                        "label": "Detail url",
-                        "format": "link"
+                    "bedrooms": {
+                        "label": "Number of bedrooms",
+                        "format": "number"
                     },
-                    "title": {
-                        "label": "Title",
+                    "operation": {
+                        "label": "Sale / Rent",
                         "format": "text"
                     },
                     "price": {
@@ -60,76 +64,44 @@
                         "label": "Size of property in square meters",
                         "format": "number"
                     },
-                    "baths": {
-                        "label": "Number of baths",
-                        "format": "number"
-                    },
-                    "bedrooms": {
-                        "label": "Number of bedrooms",
-                        "format": "number"
-                    },
-                    "address": {
-                        "label": "Address",
+                    "title": {
+                        "label": "Title",
                         "format": "text"
                     },
                     "typology": {
                         "label": "Type of property",
                         "format": "text"
                     },
-                    "subTypology": {
-                        "label": "Sub type",
+                    "url": {
+                        "label": "Detail url",
+                        "format": "link"
+                    },
+                    "AI_DATA": {
+                        "label": "AI Data",
                         "format": "text"
                     },
-                    "D_ID": {
-                        "label": "Location id",
-                        "format": "number"
-                    },
-                    "D_NAME": {
-                        "label": "Location name",
-                        "format": "text"
-                    },
-                    "latitude": {
-                        "label": "Latitude",
-                        "format": "number"
-                    },
-                    "longitude": {
-                        "label": "Longitude",
-                        "format": "number"
-                    },
-                    "description": {
-                        "label": "Description",
-                        "format": "text"
-                    },
-                    "newDevelopment": {
-                        "label": "New Development",
-                        "format": "text"
-                    },
-                    "parking": {
-                        "label": "Parking",
-                        "format": "text"
-                    },
-                    "buildingQuality": {
-                        "label": "Building Quality",
-                        "format": "text"
-                    },
-                    "garden": {
-                        "label": "Garden",
-                        "format": "text"
-                    },
-                    "pool": {
-                        "label": "Pool",
+                    "address": {
+                        "label": "Address",
                         "format": "text"
                     },
                     "balcony": {
                         "label": "Balcony",
                         "format": "text"
                     },
-                    "floor": {
-                        "label": "Floor",
+                    "baths": {
+                        "label": "Number of baths",
+                        "format": "number"
+                    },
+                    "buildingQuality": {
+                        "label": "Building Quality",
                         "format": "text"
                     },
-                    "lift": {
-                        "label": "Lift",
+                    "cellar": {
+                        "label": "Cellar",
+                        "format": "text"
+                    },
+                    "description": {
+                        "label": "Description",
                         "format": "text"
                     },
                     "energyType": {
@@ -144,20 +116,48 @@
                         "label": "Energy Class",
                         "format": "text"
                     },
+                    "floor": {
+                        "label": "Floor",
+                        "format": "text"
+                    },
+                    "garden": {
+                        "label": "Garden",
+                        "format": "text"
+                    },
                     "heatingType": {
                         "label": "Heating Type",
                         "format": "text"
                     },
-                    "cellar": {
-                        "label": "Cellar",
+                    "latitude": {
+                        "label": "Latitude",
+                        "format": "number"
+                    },
+                    "longitude": {
+                        "label": "Longitude",
+                        "format": "number"
+                    },
+                    "pool": {
+                        "label": "Pool",
+                        "format": "text"
+                    },
+                    "lift": {
+                        "label": "Lift",
+                        "format": "text"
+                    },
+                    "newDevelopment": {
+                        "label": "New Development",
+                        "format": "text"
+                    },
+                    "parking": {
+                        "label": "Parking",
                         "format": "text"
                     },
                     "renovation": {
                         "label": "Renovation",
                         "format": "text"
                     },
-                    "AI_DATA": {
-                        "label": "AI Data",
+                    "subTypology": {
+                        "label": "Sub type",
                         "format": "text"
                     }
                 }
