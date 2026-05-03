@@ -6,6 +6,7 @@
             "transformation": {
                 "fields": [
                     "D_ID",
+                    "MOTHER_ID",
                     "D_NAME",
                     "bedrooms",
                     "operation",
@@ -42,6 +43,10 @@
                 "properties": {
                     "D_ID": {
                         "label": "Location id",
+                        "format": "number"
+                    },
+                    "MOTHER_ID": {
+                        "label": "Mother location id",
                         "format": "number"
                     },
                     "D_NAME": {

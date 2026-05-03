@@ -1,12 +1,13 @@
-import { log, Dataset } from '@crawlee/cheerio';
-import { LABELS, BASIC_HEADERS, LISTING_BODY } from './consts.js';
+import { Dataset,log } from '@crawlee/cheerio';
+
+import { BASIC_HEADERS, LABELS, LISTING_BODY } from './consts.js';
 import { getSearchUrl } from './ListingSearchHelper.js';
 
 export const handleDistrictSearch = async (context) => {
     const { json, crawler: { requestQueue }, request: { userData } } = context;
     const { userInput } = userData;
     log.info(`Found ${json.results.length}`);
-    let foundLocation = json.results[0];
+    const foundLocation = json.results[0];
     log.info('Pick:', { data: json.results[0] })
 
     const url = getSearchUrl({
@@ -101,6 +102,7 @@ export const handleProperty = async (context) => {
     const prop = handleOneProperty(json, requestPayload.operation);
     prop.D_ID = item.id;
     prop.D_NAME = item.name;
+    prop.MOTHER_ID = item.mother;
     prop.AI_DATA = [
         `ADDRESS: ${prop.address ?? ''}`,
         `DESCRIPTION: ${prop.description ?? ''}`,

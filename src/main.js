@@ -1,8 +1,9 @@
+import { CheerioCrawler,log} from '@crawlee/cheerio';
 import { Actor } from 'apify';
-import { log, CheerioCrawler} from '@crawlee/cheerio';
-import { BASIC_HEADERS, LABELS, LISTING_BODY, MAX_ITEMS_STAT_NAME } from './consts.js';
-import { handleDistrictSearch, handleProperty, handlePropertyList } from './routes.js';
+
+import { BASIC_HEADERS, LABELS, LISTING_BODY } from './consts.js';
 import { getSearchUrl } from './ListingSearchHelper.js';
+import { handleDistrictSearch, handleProperty, handlePropertyList } from './routes.js';
 
 await Actor.init();
 
@@ -29,7 +30,7 @@ const proxyConfiguration = await Actor.createProxyConfiguration(proxy);
 const requestQueue = await Actor.openRequestQueue();
 
 if (inputCities.length > 0) {
-    for (const { url, id, name } of inputCities) {
+    for (const { url, id, name, mother } of inputCities) {
         if (url.match(/\/expose/)) {
             const propertyId = url.match(/expose\/([a-z\d]+)/)[1];
             await requestQueue.addRequest({
@@ -41,18 +42,18 @@ if (inputCities.length > 0) {
                 },
             });
         } else if (url.match(/\/Suche\//)) {
-            let u = url.replaceAll('https://www.immobilienscout24.de/Suche/', '');
-            let uArr = u.split('/');
+            const u = url.replaceAll('https://www.immobilienscout24.de/Suche/', '');
+            const uArr = u.split('/');
             let geopath = '';
             for(let i = 0; i < uArr.length - 1; i++) {
-                geopath += '/'+uArr[i];
+                geopath += `/${uArr[i]}`;
             }
 
 
             const searchUrl = getSearchUrl({
                 geocodes: geopath,
                 realestateType: propertyType,
-                operation: operation,
+                operation,
                 pageNumber: 1,
                 min: minPrice,
                 max: maxPrice
@@ -66,10 +67,10 @@ if (inputCities.length > 0) {
                 userData: {
                     label: LABELS.PROPERTY_LIST,
                     item: {
-                        id, name
+                        id, name, mother
                     },
                     requestPayload: {
-                        geopath: geopath,
+                        geopath,
                         pageNumber: 1,
                         maxItems: 20,
                         ...userInput,
