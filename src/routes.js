@@ -43,7 +43,7 @@ export const handlePropertyList = async (context, { userInput }) => {
     const { maxItems, endPage = 10 } = userInput;
     const { requestPayload : body } = userData;
 
-    let items = (body.pageNumber - 1) * body.maxItems;
+    let items = (body.pageNumber - 1) * json.pageSize;
     let processedItems = items;
     for (const article of json.resultListItems) {
         if (processedItems >= maxItems) {
@@ -67,8 +67,8 @@ export const handlePropertyList = async (context, { userInput }) => {
     if (page === 1) {
         log.info(`Total pageItems ${json.totalResults}`);
     }
-    if (items < json.totalResults && page <= endPage) {
-        if (maxItems !== null && items > maxItems){
+    if (items < json.totalResults && page <= endPage && page <= json.numberOfPages) {
+        if (maxItems !== null && items > maxItems) {
 
         } else {
             body.pageNumber = page + 1;

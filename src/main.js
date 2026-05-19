@@ -106,7 +106,7 @@ const crawler = new CheerioCrawler({
                     onlyNewest
                 });
             case LABELS.PROPERTY:
-                return handleProperty(context, proxyConfiguration);
+                return handleProperty(context);
             default:
                 log.warning('Unknown label');
         }
