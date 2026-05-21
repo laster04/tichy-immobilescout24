@@ -2,7 +2,7 @@ import { CheerioCrawler,log} from '@crawlee/cheerio';
 import { Actor } from 'apify';
 
 import { BASIC_HEADERS, LABELS, LISTING_BODY } from './consts.js';
-import { getSearchUrl } from './ListingSearchHelper.js';
+import { getSearchUrl, getShapeSearchUrl, parseShapeUrl } from './ListingSearchHelper.js';
 import { handleDistrictSearch, handleProperty, handlePropertyList } from './routes.js';
 
 await Actor.init();
@@ -22,6 +22,8 @@ const {
     propertyType = 'apartment',
 } = userInput;
 
+log.setLevel(debugLog ? log.LEVELS.DEBUG : log.LEVELS.WARNING);
+
 if (!district && inputCities.length === 0) {
     await Actor.fail('You have to input district param or any inputCities to run crawler..');
 }
@@ -39,6 +41,34 @@ if (inputCities.length > 0) {
                 headers: BASIC_HEADERS,
                 userData: {
                     label: LABELS.PROPERTY,
+                },
+            });
+        } else if (url.match(/\/shape\//)) {
+            const { shape, propertyType: shapePropertyType, operation: shapeOperation } = parseShapeUrl(url);
+            const searchUrl = getShapeSearchUrl({
+                shape,
+                realestateType: shapePropertyType,
+                operation: shapeOperation,
+                pageNumber: 1,
+                min: minPrice,
+                max: maxPrice,
+            });
+            await requestQueue.addRequest({
+                url: searchUrl,
+                method: 'GET',
+                uniqueKey: `shape-${shape}-1`,
+                headers: BASIC_HEADERS,
+                userData: {
+                    label: LABELS.PROPERTY_LIST,
+                    item: { id, name, mother },
+                    requestPayload: {
+                        shape,
+                        pageNumber: 1,
+                        maxItems: 20,
+                        ...userInput,
+                        propertyType: shapePropertyType,
+                        operation: shapeOperation,
+                    },
                 },
             });
         } else if (url.match(/\/Suche\//)) {

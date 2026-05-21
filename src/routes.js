@@ -1,7 +1,7 @@
-import { Dataset,log } from '@crawlee/cheerio';
+import { Dataset, KeyValueStore, log } from '@crawlee/cheerio';
 
 import { BASIC_HEADERS, LABELS, LISTING_BODY } from './consts.js';
-import { getSearchUrl } from './ListingSearchHelper.js';
+import { getSearchUrl, getShapeSearchUrl } from './ListingSearchHelper.js';
 
 export const handleDistrictSearch = async (context) => {
     const { json, crawler: { requestQueue }, request: { userData } } = context;
@@ -66,26 +66,41 @@ export const handlePropertyList = async (context, { userInput }) => {
     let page = body.pageNumber;
     if (page === 1) {
         log.info(`Total pageItems ${json.totalResults}`);
+        const store = await KeyValueStore.open();
+        const existing = await store.getValue('TOTAL_RESULTS');
+        const prev = existing?.totalResults ?? 0;
+        await store.setValue('TOTAL_RESULTS', { totalResults: prev + json.totalResults });
     }
     if (items < json.totalResults && page <= endPage && page <= json.numberOfPages) {
         if (maxItems !== null && items > maxItems) {
 
         } else {
             body.pageNumber = page + 1;
-            const url = getSearchUrl({
-                geocodes: body.geopath,
-                realestateType: body.propertyType,
-                operation: body.operation,
-                pageNumber: body.pageNumber,
-                min: body.minPrice,
-                max: body.maxPrice
-            });
+            const url = body.shape
+                ? getShapeSearchUrl({
+                    shape: body.shape,
+                    realestateType: body.propertyType,
+                    operation: body.operation,
+                    pageNumber: body.pageNumber,
+                    min: body.minPrice,
+                    max: body.maxPrice,
+                })
+                : getSearchUrl({
+                    geocodes: body.geopath,
+                    realestateType: body.propertyType,
+                    operation: body.operation,
+                    pageNumber: body.pageNumber,
+                    min: body.minPrice,
+                    max: body.maxPrice,
+                });
 
             await requestQueue.addRequest({
                 url,
-                uniqueKey: `${body.geopath}-${body.pageNumber}-${body.propertyType}`,
-                method: 'POST',
-                payload: JSON.stringify(LISTING_BODY),
+                uniqueKey: body.shape
+                    ? `shape-${body.shape}-${body.pageNumber}`
+                    : `${body.geopath}-${body.pageNumber}-${body.propertyType}`,
+                method: body.shape ? 'GET' : 'POST',
+                ...(body.shape ? {} : { payload: JSON.stringify(LISTING_BODY) }),
                 headers: BASIC_HEADERS,
                 userData: {
                     ...userData,

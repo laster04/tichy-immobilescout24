@@ -1,13 +1,19 @@
-
-
-const BASE_SEARCH_URL = 'https://api.mobile.immobilienscout24.de/search/list?features=adKeysAndStringValues,virtualTour,contactDetails,additionalImages,viareporting,nextgen,calculatedTotalRent,listingsInListFirstSummary,xxlListingType,quickfilters,grouping,projectsInAllRealestateTypes,fairPrice&pagesize=20&searchType=region&sorting=standard&channel=is24';
+const SEARCH_TYPE_REGION = 'region';
+const SEARCH_TYPE_SHAPE = 'shape';
+const BASE_SEARCH_URL = (searchType = SEARCH_TYPE_REGION) => `https://api.mobile.immobilienscout24.de/search/list?features=adKeysAndStringValues,virtualTour,contactDetails,additionalImages,viareporting,nextgen,calculatedTotalRent,listingsInListFirstSummary,xxlListingType,quickfilters,grouping,projectsInAllRealestateTypes,fairPrice&pagesize=20&searchType=${searchType}&sorting=standard&channel=is24`;
 const OPERATION_SALE = 'sale';
 
 function getSearchUrl( inputQuery ) {
     const { geocodes, realestateType, operation, pageNumber = 1, min = null, max = null } = inputQuery;
     const realEstateQuery = getRealEstateTypeOperation(realestateType, operation);
     const priceQuery = getPriceFilter(min, max);
-    return BASE_SEARCH_URL + `&geocodes=${geocodes}` +`&pagenumber=${pageNumber}` + `&${realEstateQuery}` + `&${priceQuery}`;
+    return `${BASE_SEARCH_URL(SEARCH_TYPE_REGION)}&geocodes=${geocodes}&pagenumber=${pageNumber}&${realEstateQuery}&${priceQuery}`;
+}
+function getShapeSearchUrl( inputQuery ) {
+    const { shape, realestateType, operation, pageNumber = 1, min = null, max = null } = inputQuery;
+    const realEstateQuery = getRealEstateTypeOperation(realestateType, operation);
+    const priceQuery = getPriceFilter(min, max);
+    return `${BASE_SEARCH_URL(SEARCH_TYPE_SHAPE)}&shape=${encodeURIComponent(shape)}&pagenumber=${pageNumber}&${realEstateQuery}&${priceQuery}`;
 }
 
 function getRealEstateTypeOperation(realestateType, operation) {
@@ -117,6 +123,31 @@ function getPriceFilter(min, max) {
     return `price=${priceQuery}`;
 }
 
+const SLUG_TO_REALESTATE = {
+    'wohnung-kaufen': { propertyType: 'apartment', operation: 'sale' },
+    'wohnung-mieten': { propertyType: 'apartment', operation: 'rent' },
+    'haus-kaufen':    { propertyType: 'house',     operation: 'sale' },
+    'haus-mieten':    { propertyType: 'house',     operation: 'rent' },
+    'grundstueck':    { propertyType: 'plot',      operation: 'sale' },
+    'garage-kaufen':  { propertyType: 'garage',    operation: 'sale' },
+    'garage-mieten':  { propertyType: 'garage',    operation: 'rent' },
+    'buero-kaufen':   { propertyType: 'office',    operation: 'sale' },
+    'buero-mieten':   { propertyType: 'office',    operation: 'rent' },
+};
+
+function parseShapeUrl(inputUrl) {
+    const u = new URL(inputUrl);
+    const shapeEncoded = u.searchParams.get('shape');
+    // Website URL encodes polyline as base64url; API expects the raw polyline string
+    const shape = Buffer.from(shapeEncoded.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+    const pathParts = u.pathname.split('/').filter(Boolean);
+    const slug = pathParts[pathParts.indexOf('shape') + 1] ?? '';
+    const { propertyType, operation } = SLUG_TO_REALESTATE[slug] ?? { propertyType: 'apartment', operation: 'sale' };
+    return { shape, propertyType, operation };
+}
+
 export {
     getSearchUrl,
+    getShapeSearchUrl,
+    parseShapeUrl,
 }
