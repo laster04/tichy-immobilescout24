@@ -63,7 +63,7 @@ export const handlePropertyList = async (context, { userInput }) => {
         processedItems++;
     }
     items = processedItems;
-    let page = body.pageNumber;
+    const page = body.pageNumber;
     if (page === 1) {
         log.info(`Total pageItems ${json.totalResults}`);
         const store = await KeyValueStore.open();
@@ -112,6 +112,79 @@ export const handlePropertyList = async (context, { userInput }) => {
     }
 };
 
+const handleOneProperty = (property, operation) => {
+    const { adTargetingParameters } = property;
+    const descriptions = [];
+    const output = {
+        operation: operation,
+        price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters?.obj_purchasePrice,
+        size: adTargetingParameters.obj_livingSpace,
+        typology: adTargetingParameters.obj_typeOfFlat,
+        url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
+        balcony: adTargetingParameters.obj_balcony,
+        buildingQuality: adTargetingParameters.obj_condition,
+        cellar: adTargetingParameters.obj_cellar,
+        energyType: adTargetingParameters.obj_energyType,
+        firingType: adTargetingParameters.obj_firingTypes,
+        energyClass: adTargetingParameters.obj_energyEfficiencyClass,
+        floor: adTargetingParameters.obj_floor,
+        garden: adTargetingParameters.obj_garden,
+        heatingType: adTargetingParameters.obj_heatingType,
+        lift: adTargetingParameters.obj_lift,
+        newDevelopment: adTargetingParameters.obj_newlyConst,
+        parking: adTargetingParameters.obj_noParkSpaces,
+        renovation: adTargetingParameters.obj_lastRefurbish,
+    };
+    for (const section of property.sections) {
+        switch (section.type) {
+            case 'TITLE':
+                output.title = section.title;
+                break;
+            case 'MEDIA':
+                // output.photos = section.media.filter(m => m.type === 'PICTURE').map(m => m.fullImageUrl);
+                // output.tour3d = section.media.filter(m => m.type === 'VIRTUAL_TOUR').map(m => m.url);
+                break;
+            case 'MAP':
+                output.latitude = section?.location?.lat;
+                output.longitude = section?.location?.lng;
+                output.address = section.addressLine2;
+                break;
+            case 'TRAVELTIME':
+                if (section.address && !section.isBlocked) {
+                    output.address = section.address;
+                }
+                break;
+            case 'TEXT_AREA':
+                descriptions.push(section.text);
+                break;
+            case 'TOP_ATTRIBUTES':
+            case 'ATTRIBUTE_LIST':
+                for (const attr of section.attributes) {
+                    switch (attr.label) {
+                        case 'Bathrooms:':
+                            output.baths = attr.text;
+                            break;
+                        case 'Total rent:':
+                            if (output.price.length === 0) {
+                                output.price = attr.text;
+                            }
+                            break;
+                        case 'Rooms':
+                            output.rooms = attr.text;
+                            break;
+                        case 'Apartment type:':
+                            output.subTypology = attr.text;
+                            break;
+                    }
+                }
+                break;
+        }
+    }
+    output.description = descriptions.join('\n\n');
+
+    return output;
+};
+
 export const handleProperty = async (context) => {
     const { json, request: { userData: { requestPayload, item } } } = context;
     const prop = handleOneProperty(json, requestPayload.operation);
@@ -145,76 +218,3 @@ export const handleProperty = async (context) => {
     await Dataset.pushData(prop);
 };
 
-
-const handleOneProperty = (property, operation) => {
-    const { adTargetingParameters } = property;
-    const descriptions = [];
-    const output = {
-        operation: operation,
-        price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters.obj_purchasePrice,
-        size: adTargetingParameters.obj_livingSpace,
-        typology: adTargetingParameters.obj_typeOfFlat,
-        url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
-        balcony: adTargetingParameters.obj_balcony,
-        buildingQuality: adTargetingParameters.obj_condition,
-        cellar: adTargetingParameters.obj_cellar,
-        energyType: adTargetingParameters.obj_energyType,
-        firingType: adTargetingParameters.obj_firingTypes,
-        energyClass: adTargetingParameters.obj_energyEfficiencyClass,
-        floor: adTargetingParameters.obj_floor,
-        garden: adTargetingParameters.obj_garden,
-        heatingType: adTargetingParameters.obj_heatingType,
-        lift: adTargetingParameters.obj_lift,
-        newDevelopment: adTargetingParameters.obj_newlyConst,
-        parking: adTargetingParameters.obj_noParkSpaces,
-        renovation: adTargetingParameters.obj_lastRefurbish,
-    }
-    for (const section of property.sections) {
-        switch (section.type) {
-            case 'TITLE':
-                output.title = section.title;
-                break;
-            case 'MEDIA':
-                // output.photos = section.media.filter(m => m.type === 'PICTURE').map(m => m.fullImageUrl);
-                // output.tour3d = section.media.filter(m => m.type === 'VIRTUAL_TOUR').map(m => m.url);
-                break;
-            case 'MAP':
-                output.latitude = section?.location?.lat;
-                output.longitude = section?.location?.lng;
-                output.address = section.addressLine2;
-                break;
-            case 'TRAVELTIME':
-                if (section.address && !section.isBlocked) {
-                    output.address = section.address;
-                }
-                break;
-            case 'TEXT_AREA':
-                descriptions.push(section.text);
-                break;
-            case 'TOP_ATTRIBUTES':
-            case 'ATTRIBUTE_LIST':
-                for (const attr of section.attributes) {
-                    switch (attr.label) {
-                        case 'Bathrooms:':
-                            output.baths = attr.text
-                            break;
-                        case 'Total rent:':
-                            if (output.price.length === 0) {
-                                output.price = attr.text
-                            }
-                            break;
-                        case 'Rooms':
-                            output.rooms = attr.text
-                            break;
-                        case 'Apartment type:':
-                            output.subTypology = attr.text
-                            break;
-                    }
-                }
-                break;
-        }
-    }
-    output.description = descriptions.join('\n\n');
-
-    return output;
-}
