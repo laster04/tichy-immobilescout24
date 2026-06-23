@@ -118,7 +118,7 @@ const handleOneProperty = (property, operation) => {
     const output = {
         operation: operation,
         price: operation === 'rent' ? adTargetingParameters.obj_baseRent : adTargetingParameters?.obj_purchasePrice,
-        size: adTargetingParameters.obj_livingSpace,
+        size: adTargetingParameters.obj_livingSpace ?? null,
         typology: adTargetingParameters.obj_typeOfFlat,
         url: `https://www.immobilienscout24.de/expose/${property.header.id}`,
         balcony: adTargetingParameters.obj_balcony,

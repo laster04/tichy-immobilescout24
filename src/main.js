@@ -72,7 +72,12 @@ if (inputCities.length > 0) {
                 },
             });
         } else if (url.match(/\/Suche\//)) {
-            const u = url.replaceAll('https://www.immobilienscout24.de/Suche/', '');
+            let u = url.replaceAll('https://www.immobilienscout24.de/Suche/', '');
+            u = u.replaceAll('wohnung-kaufen/', '');
+            u = u.replaceAll(
+                'wohnung-mieten/',
+                '',
+            );
             const uArr = u.split('/');
             let geopath = '';
             for(let i = 0; i < uArr.length - 1; i++) {
